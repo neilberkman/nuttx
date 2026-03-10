@@ -1,0 +1,24 @@
+name: Sync upstream
+
+on:
+  schedule:
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Sync from upstream
+        run: |
+          git remote add upstream https://github.com/apache/nuttx.git
+          git fetch upstream master
+          git merge --ff-only upstream/master
+          git push origin master
